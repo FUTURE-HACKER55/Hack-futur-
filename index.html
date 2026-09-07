@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#0b1020">
+  <title>Future Assistant</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="app">
+    <header>
+      <div>
+        <p class="eyebrow">FUTURE ASSISTANT</p>
+        <h1>Ton espace pour avancer.</h1>
+        <p class="muted">Organise tes tâches, tes idées et tes priorités au même endroit.</p>
+      </div>
+      <button id="clearDone" class="ghost">Effacer les terminées</button>
+    </header>
+
+    <section class="grid">
+      <article class="card hero">
+        <span class="badge">Aujourd'hui</span>
+        <h2 id="progressTitle">Prêt à commencer</h2>
+        <div class="progress"><span id="progressBar"></span></div>
+        <p id="progressText" class="muted">Ajoute ta première tâche.</p>
+      </article>
+
+      <article class="card">
+        <h2>Nouvelle tâche</h2>
+        <form id="taskForm" class="stack">
+          <input id="taskInput" required maxlength="120" placeholder="Ex. Terminer mon prototype" autocomplete="off">
+          <select id="priorityInput">
+            <option value="normal">Priorité normale</option>
+            <option value="high">Priorité haute</option>
+            <option value="low">Priorité basse</option>
+          </select>
+          <button class="primary" type="submit">Ajouter</button>
+        </form>
+      </article>
+
+      <article class="card tasks-card">
+        <div class="section-title"><h2>Mes tâches</h2><span id="taskCount" class="counter">0</span></div>
+        <ul id="taskList" class="tasks"></ul>
+      </article>
+
+      <article class="card notes-card">
+        <div class="section-title"><h2>Idées / notes</h2><button id="saveNote" class="small">Sauvegarder</button></div>
+        <textarea id="notes" maxlength="3000" placeholder="Écris une idée, un plan ou une chose à ne pas oublier..."></textarea>
+      </article>
+    </section>
+
+    <footer><span>100% local • tes données restent dans ce navigateur</span></footer>
+  </main>
+  <script src="app.js"></script>
+</body>
+</html>
