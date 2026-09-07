@@ -4,64 +4,71 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#0b1020">
-  <title>Future Assistant</title>
+  <title>Future Assistant — V2</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <main class="app">
-    <header>
+    <header class="topbar">
       <div>
-        <p class="eyebrow">FUTURE ASSISTANT</p>
+        <p class="eyebrow">FUTURE ASSISTANT · V2</p>
         <h1>Ton espace pour avancer.</h1>
-        <p class="muted">Une assistante personnelle avec tâches, mémoire, chat IA et commandes vocales.</p>
+        <p class="muted">Conversations, mémoire structurée, tâches et commandes vocales.</p>
       </div>
-      <button id="clearDone" class="ghost">Effacer les terminées</button>
+      <div class="top-actions">
+        <button id="newConversation" class="ghost">＋ Nouvelle conversation</button>
+        <button id="clearDone" class="ghost">Effacer les terminées</button>
+      </div>
     </header>
 
-    <section class="grid">
-      <article class="card hero">
-        <span class="badge">Aujourd'hui</span>
-        <h2 id="progressTitle">Prêt à commencer</h2>
-        <div class="progress"><span id="progressBar"></span></div>
-        <p id="progressText" class="muted">Ajoute ta première tâche.</p>
-      </article>
+    <section class="workspace">
+      <aside class="card sidebar">
+        <div class="section-title"><h2>Conversations</h2><span id="conversationCount" class="counter">0</span></div>
+        <button id="newConversationSide" class="primary full">＋ Nouvelle conversation</button>
+        <div id="conversationList" class="conversation-list"></div>
+        <div class="memory-mini">
+          <div class="section-title"><h3>🧠 Mémoire</h3><button id="saveNote" class="small">Sauver</button></div>
+          <textarea id="notes" maxlength="3000" placeholder="Objectifs, idées, préférences à retenir…"></textarea>
+        </div>
+      </aside>
 
-      <article class="card chat-card">
-        <div class="section-title"><h2>💬 Assistante IA</h2><span id="aiStatus" class="counter">Local</span></div>
+      <section class="card chat-card">
+        <div class="chat-header">
+          <div><span class="badge">Assistant</span><h2 id="conversationTitle">Nouvelle conversation</h2></div>
+          <span id="aiStatus" class="counter">Local</span>
+        </div>
         <div id="chatMessages" class="chat-messages" aria-live="polite"></div>
         <form id="chatForm" class="chat-form">
           <input id="chatInput" maxlength="1000" placeholder="Écris à ton assistante…" autocomplete="off">
           <button id="voiceButton" class="small" type="button" title="Commande vocale">🎙️</button>
           <button class="primary" type="submit">Envoyer</button>
         </form>
-        <p id="voiceStatus" class="muted hint">Commandes rapides : « ajoute une tâche », « montre mes tâches », « note… »</p>
-      </article>
+        <p id="voiceStatus" class="muted hint">Essaie : « ajoute une tâche », « montre mes tâches », « note… »</p>
+      </section>
+    </section>
 
+    <section class="grid secondary-grid">
+      <article class="card hero">
+        <span class="badge">Aujourd'hui</span>
+        <h2 id="progressTitle">Prêt à commencer</h2>
+        <div class="progress"><span id="progressBar"></span></div>
+        <p id="progressText" class="muted">Ajoute ta première tâche.</p>
+      </article>
       <article class="card">
         <h2>Nouvelle tâche</h2>
         <form id="taskForm" class="stack">
           <input id="taskInput" required maxlength="120" placeholder="Ex. Terminer mon prototype" autocomplete="off">
-          <select id="priorityInput">
-            <option value="normal">Priorité normale</option>
-            <option value="high">Priorité haute</option>
-            <option value="low">Priorité basse</option>
-          </select>
+          <select id="priorityInput"><option value="normal">Priorité normale</option><option value="high">Priorité haute</option><option value="low">Priorité basse</option></select>
           <button class="primary" type="submit">Ajouter</button>
         </form>
       </article>
-
       <article class="card tasks-card">
         <div class="section-title"><h2>Mes tâches</h2><span id="taskCount" class="counter">0</span></div>
         <ul id="taskList" class="tasks"></ul>
       </article>
-
-      <article class="card notes-card">
-        <div class="section-title"><h2>🧠 Mémoire / notes</h2><button id="saveNote" class="small">Sauvegarder</button></div>
-        <textarea id="notes" maxlength="3000" placeholder="Écris une idée, un objectif ou une chose à retenir..."></textarea>
-      </article>
     </section>
 
-    <footer><span>Données locales dans ce navigateur • la clé API ne doit jamais être placée dans ce fichier.</span></footer>
+    <footer>Données locales dans ce navigateur • la clé API reste uniquement côté serveur.</footer>
   </main>
   <script src="app.js"></script>
 </body>
