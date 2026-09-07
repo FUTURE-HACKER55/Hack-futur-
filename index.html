@@ -13,7 +13,7 @@
       <div>
         <p class="eyebrow">FUTURE ASSISTANT</p>
         <h1>Ton espace pour avancer.</h1>
-        <p class="muted">Organise tes tâches, tes idées et tes priorités au même endroit.</p>
+        <p class="muted">Une assistante personnelle avec tâches, mémoire, chat IA et commandes vocales.</p>
       </div>
       <button id="clearDone" class="ghost">Effacer les terminées</button>
     </header>
@@ -24,6 +24,17 @@
         <h2 id="progressTitle">Prêt à commencer</h2>
         <div class="progress"><span id="progressBar"></span></div>
         <p id="progressText" class="muted">Ajoute ta première tâche.</p>
+      </article>
+
+      <article class="card chat-card">
+        <div class="section-title"><h2>💬 Assistante IA</h2><span id="aiStatus" class="counter">Local</span></div>
+        <div id="chatMessages" class="chat-messages" aria-live="polite"></div>
+        <form id="chatForm" class="chat-form">
+          <input id="chatInput" maxlength="1000" placeholder="Écris à ton assistante…" autocomplete="off">
+          <button id="voiceButton" class="small" type="button" title="Commande vocale">🎙️</button>
+          <button class="primary" type="submit">Envoyer</button>
+        </form>
+        <p id="voiceStatus" class="muted hint">Commandes rapides : « ajoute une tâche », « montre mes tâches », « note… »</p>
       </article>
 
       <article class="card">
@@ -45,12 +56,12 @@
       </article>
 
       <article class="card notes-card">
-        <div class="section-title"><h2>Idées / notes</h2><button id="saveNote" class="small">Sauvegarder</button></div>
-        <textarea id="notes" maxlength="3000" placeholder="Écris une idée, un plan ou une chose à ne pas oublier..."></textarea>
+        <div class="section-title"><h2>🧠 Mémoire / notes</h2><button id="saveNote" class="small">Sauvegarder</button></div>
+        <textarea id="notes" maxlength="3000" placeholder="Écris une idée, un objectif ou une chose à retenir..."></textarea>
       </article>
     </section>
 
-    <footer><span>100% local • tes données restent dans ce navigateur</span></footer>
+    <footer><span>Données locales dans ce navigateur • la clé API ne doit jamais être placée dans ce fichier.</span></footer>
   </main>
   <script src="app.js"></script>
 </body>
