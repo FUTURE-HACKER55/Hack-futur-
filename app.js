@@ -1,85 +1,38 @@
-const tasks=JSON.parse(localStorage.getItem('future_tasks')||'[]');
-const conversations=JSON.parse(localStorage.getItem('future_conversations')||'[]');
-let activeId=localStorage.getItem('future_active_conversation');
-const notes=document.querySelector('#notes');
-notes.value=localStorage.getItem('future_notes')||'';
-const list=document.querySelector('#taskList');
-const count=document.querySelector('#taskCount');
-const bar=document.querySelector('#progressBar');
-const title=document.querySelector('#progressTitle');
-const text=document.querySelector('#progressText');
-const messages=document.querySelector('#chatMessages');
-const chatInput=document.querySelector('#chatInput');
-const aiStatus=document.querySelector('#aiStatus');
-const voiceStatus=document.querySelector('#voiceStatus');
-const conversationList=document.querySelector('#conversationList');
-const conversationTitle=document.querySelector('#conversationTitle');
-const conversationCount=document.querySelector('#conversationCount');
+const tasks=JSON.parse(localStorage.getItem('xcar_tasks')||localStorage.getItem('future_tasks')||'[]');
+const conversations=JSON.parse(localStorage.getItem('xcar_conversations')||localStorage.getItem('future_conversations')||'[]');
+let activeId=localStorage.getItem('xcar_active')||localStorage.getItem('future_active_conversation');
+const notes=document.querySelector('#notes');notes.value=localStorage.getItem('xcar_notes')||localStorage.getItem('future_notes')||'';
+const messages=document.querySelector('#chatMessages'),input=document.querySelector('#chatInput'),aiStatus=document.querySelector('#aiStatus');
+const skills=[
+{id:'code',icon:'💻',name:'Code',desc:'Développer, déboguer et expliquer.',level:78},
+{id:'focus',icon:'🎯',name:'Focus',desc:'Prioriser et transformer les objectifs.',level:92},
+{id:'creative',icon:'✨',name:'Creative',desc:'Idées, concepts et prototypes.',level:71},
+{id:'learn',icon:'🧠',name:'Learn',desc:'Plans d’apprentissage personnalisés.',level:84},
+{id:'data',icon:'📊',name:'Analytics',desc:'Lire les tendances et résumer.',level:66},
+{id:'planner',icon:'⚙️',name:'Planner',desc:'Organiser missions et routines.',level:88}
+];
+const skillsGrid=document.querySelector('#skillsGrid');
+skillsGrid.innerHTML=skills.map(s=>`<button class="skill" data-skill="${s.name}"><div class="skill-top"><span class="skill-icon">${s.icon}</span><span class="counter">${s.level}%</span></div><div class="skill-name">${s.name}</div><div class="skill-desc">${s.desc}</div><div class="skill-bar"><span style="width:${s.level}%"></span></div></button>`).join('');
 
-function save(){localStorage.setItem('future_tasks',JSON.stringify(tasks));render()}
-function saveConversations(){localStorage.setItem('future_conversations',JSON.stringify(conversations));localStorage.setItem('future_active_conversation',activeId||'');renderConversations()}
-function render(){
-  list.innerHTML='';
-  tasks.forEach((t,i)=>{
-    const li=document.createElement('li'); li.className='task '+(t.done?'done':'');
-    li.innerHTML=`<input type="checkbox" ${t.done?'checked':''} aria-label="Terminer la tâche"><span class="task-text"></span><span class="priority">${t.priority}</span><button class="delete" aria-label="Supprimer">×</button>`;
-    li.querySelector('.task-text').textContent=t.text;
-    li.querySelector('input').onchange=()=>{t.done=!t.done;save()};
-    li.querySelector('.delete').onclick=()=>{tasks.splice(i,1);save()}; list.appendChild(li)
-  });
-  const done=tasks.filter(t=>t.done).length, pct=tasks.length?Math.round(done/tasks.length*100):0;
-  count.textContent=tasks.length; bar.style.width=pct+'%';
-  title.textContent=tasks.length?(pct===100?'Tout est terminé 🎉':`${done}/${tasks.length} tâches terminées`):'Prêt à commencer';
-  text.textContent=tasks.length?`${pct}% de progression aujourd’hui.`:'Ajoute ta première tâche.';
-}
-function addTask(value,priority='normal'){const clean=value.trim();if(!clean)return false;tasks.unshift({text:clean,priority,done:false});save();return true}
-function addMessage(role,value,persist=true){
-  const el=document.createElement('div'); el.className=`message ${role}`; el.textContent=value; messages.appendChild(el); messages.scrollTop=messages.scrollHeight;
-  if(persist){const c=getActive(); if(c){c.messages.push({role,value}); if(c.messages.length===1)c.title=value.slice(0,42); saveConversations()}}
-}
+function persist(){localStorage.setItem('xcar_tasks',JSON.stringify(tasks));localStorage.setItem('xcar_conversations',JSON.stringify(conversations));localStorage.setItem('xcar_active',activeId||'');localStorage.setItem('xcar_notes',notes.value)}
 function getActive(){return conversations.find(c=>c.id===activeId)||null}
-function createConversation(){
-  const c={id:Date.now().toString(36),title:'Nouvelle conversation',createdAt:new Date().toISOString(),messages:[]};
-  conversations.unshift(c);activeId=c.id;saveConversations();loadConversation();
-}
-function loadConversation(){
-  const c=getActive(); if(!c)return createConversation(); messages.innerHTML=''; conversationTitle.textContent=c.title;
-  if(!c.messages.length){addMessage('assistant','Bonjour 👋 Je suis ton Future Assistant. Essaie « ajoute une tâche : apprendre JavaScript » ou pose-moi une question.',false)}
-  else c.messages.forEach(m=>{const el=document.createElement('div');el.className=`message ${m.role}`;el.textContent=m.value;messages.appendChild(el)});
-  messages.scrollTop=messages.scrollHeight;renderConversations();
-}
-function renderConversations(){
-  conversationList.innerHTML=''; conversationCount.textContent=conversations.length;
-  conversations.forEach(c=>{const b=document.createElement('button');b.className='conversation-item '+(c.id===activeId?'active':'');b.textContent=c.title;b.onclick=()=>{activeId=c.id;saveConversations();loadConversation()};conversationList.appendChild(b)})
-}
-function localAssistant(input){
-  const q=input.trim(), lower=q.toLowerCase();
-  if(/^(bonjour|salut|hello|bonsoir)/.test(lower))return'Bonjour 👋 Je peux gérer tes tâches, tes notes et discuter avec toi.';
-  if(lower.includes('montre')&&lower.includes('tâche'))return tasks.length?tasks.map((t,i)=>`${i+1}. ${t.done?'✅':'⬜'} ${t.text} (${t.priority})`).join('\n'):'Tu n’as encore aucune tâche.';
-  if(lower.startsWith('ajoute une tâche')||lower.startsWith('ajoute une tache')){const value=q.replace(/^ajoute une t[aâ]che\s*:? */i,'');if(addTask(value))return`Tâche ajoutée : ${value}`;return'Exemple : « ajoute une tâche : finir mon prototype ». '}
-  if(lower.startsWith('note ')||lower.startsWith('note:')){const value=q.replace(/^note\s*:? */i,'');notes.value=notes.value?`${notes.value}\n${value}`:value;localStorage.setItem('future_notes',notes.value);return'Note enregistrée dans ta mémoire locale 🧠.'}
-  if(lower.includes('combien')&&lower.includes('tâche'))return`Tu as ${tasks.length} tâche(s), dont ${tasks.filter(t=>!t.done).length} à faire.`;
-  if(lower.includes('mémoire')||lower.includes('memoire'))return notes.value?`Voici ta mémoire locale :\n${notes.value}`:'Ta mémoire locale est encore vide.';
-  return null;
-}
-async function askAI(input){
-  const response=localAssistant(input); if(response){aiStatus.textContent='Local';addMessage('assistant',response);return}
-  aiStatus.textContent='IA…';
-  try{
-    const c=getActive(); const history=(c?.messages||[]).slice(-12);
-    const r=await fetch('/api/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({message:input,memory:notes.value,tasks,history})});
-    if(!r.ok)throw new Error('API indisponible'); const data=await r.json(); addMessage('assistant',data.reply||'Je n’ai pas reçu de réponse.'); aiStatus.textContent='IA';
-  }catch(e){aiStatus.textContent='Local';addMessage('assistant','Le mode IA n’est pas connecté. Les commandes locales restent disponibles.')}
-}
+function createConversation(){const c={id:Date.now().toString(36),title:'Nouvelle mission',createdAt:new Date().toISOString(),messages:[]};conversations.unshift(c);activeId=c.id;persist();loadConversation()}
+function addMessage(role,value,persistMsg=true){const el=document.createElement('div');el.className=`message ${role}`;el.textContent=value;messages.appendChild(el);messages.scrollTop=messages.scrollHeight;if(persistMsg){const c=getActive();if(c){c.messages.push({role,value});if(c.messages.length===1)c.title=value.slice(0,40);persist();renderConversations()}}}
+function loadConversation(){const c=getActive();if(!c)return createConversation();messages.innerHTML='';if(!c.messages.length)addMessage('assistant','Salut 👋 Je suis X-Carl. Tes skills sont chargés. Donne-moi une mission, demande une analyse ou active un mode de travail.',false);else c.messages.forEach(m=>addMessage(m.role,m.value,false));renderConversations()}
+function renderConversations(){const box=document.querySelector('#conversationList');box.innerHTML='';conversations.forEach(c=>{const b=document.createElement('button');b.className='conversation-item '+(c.id===activeId?'active':'');b.textContent=c.title;b.onclick=()=>{activeId=c.id;persist();loadConversation()};box.appendChild(b)})}
+function saveTasks(){persist();renderTasks()}
+function addTask(value,priority='normal'){const clean=value.trim();if(!clean)return false;tasks.unshift({text:clean,priority,done:false,createdAt:Date.now()});saveTasks();return true}
+function renderTasks(){const list=document.querySelector('#taskList');list.innerHTML='';tasks.forEach((t,i)=>{const li=document.createElement('li');li.className='task '+(t.done?'done':'');li.innerHTML=`<input type="checkbox" ${t.done?'checked':''}><span class="task-text"></span><span class="priority">${t.priority}</span><button class="delete">×</button>`;li.querySelector('.task-text').textContent=t.text;li.querySelector('input').onchange=()=>{t.done=!t.done;saveTasks()};li.querySelector('.delete').onclick=()=>{tasks.splice(i,1);saveTasks()};list.appendChild(li)});const done=tasks.filter(t=>t.done).length,total=tasks.length,pct=total?Math.round(done/total*100):0;document.querySelector('#taskCount').textContent=total;document.querySelector('#progressBar').style.width=pct+'%';document.querySelector('#progressText').textContent=`${pct}% terminé • ${done}/${total}`;updateXP()}
+function updateXP(){const done=tasks.filter(t=>t.done).length;const xp=done*25+Math.min(tasks.length*5,50);const level=Math.floor(xp/100)+1;document.querySelector('#level').textContent=level;document.querySelector('#xpText').textContent=`${xp%100} / 100`;document.querySelector('#xpBar').style.width=(xp%100)+'%';document.querySelector('#streak').textContent=done;}
+function drawChart(){const data=tasks.length?[10,18,25,32,45,Math.min(80,45+tasks.length*5),Math.min(95,55+tasks.filter(t=>t.done).length*8)]:[18,35,27,48,40,64,52];document.querySelector('#chartBars').innerHTML=data.map(v=>`<span class="bar" style="height:${v}%"></span>`).join('')}
+function localAssistant(q){const l=q.toLowerCase();if(/^(salut|bonjour|hello|bonsoir)/.test(l))return'Salut 👋 X-Carl est opérationnel. Choisis un skill ou donne-moi une mission.';if(l.includes('montre')&&l.includes('tâche'))return tasks.length?tasks.map((t,i)=>`${i+1}. ${t.done?'✅':'⬜'} ${t.text} — ${t.priority}`).join('\n'):'Aucune mission pour le moment.';if(l.startsWith('ajoute une tâche')||l.startsWith('ajoute une tache')){const v=q.replace(/^ajoute une t[aâ]che\s*:? */i,'');return addTask(v)?`Mission ajoutée ⚡ ${v}`:'Écris par exemple : ajoute une tâche : finir mon prototype.'}if(l.startsWith('note ')||l.startsWith('note:')){const v=q.replace(/^note\s*:? */i,'');notes.value=notes.value?`${notes.value}\n${v}`:v;persist();return'Information enregistrée dans Memory Core 🧠.'}if(l.includes('combien')&&l.includes('tâche'))return`Tu as ${tasks.length} mission(s), dont ${tasks.filter(t=>!t.done).length} active(s).`;if(l.includes('mémoire')||l.includes('memoire'))return notes.value?`Memory Core :\n${notes.value}`:'Memory Core est vide.';return null}
+async function askAI(q){const local=localAssistant(q);if(local){aiStatus.textContent='LOCAL';addMessage('assistant',local);return}aiStatus.textContent='AI…';try{const c=getActive();const history=(c?.messages||[]).slice(-12);const r=await fetch('/api/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({message:q,memory:notes.value,tasks,history,assistant:'X-Carl',skills:skills.map(s=>s.name)})});if(!r.ok)throw new Error('API');const d=await r.json();addMessage('assistant',d.reply||'Réponse vide.');aiStatus.textContent='AI ONLINE'}catch(e){aiStatus.textContent='LOCAL';addMessage('assistant','Le moteur IA distant n’est pas disponible. X-Carl garde ses fonctions locales actives.')}}
 
-document.querySelector('#taskForm').onsubmit=e=>{e.preventDefault();const input=document.querySelector('#taskInput');if(addTask(input.value,document.querySelector('#priorityInput').value)){input.value='';input.focus()}};
-document.querySelector('#clearDone').onclick=()=>{for(let i=tasks.length-1;i>=0;i--)if(tasks[i].done)tasks.splice(i,1);save()};
-document.querySelector('#saveNote').onclick=()=>{localStorage.setItem('future_notes',notes.value);alert('Mémoire sauvegardée.')};
-document.querySelector('#chatForm').onsubmit=e=>{e.preventDefault();const value=chatInput.value.trim();if(!value)return;chatInput.value='';addMessage('user',value);askAI(value)};
+document.querySelector('#taskForm').onsubmit=e=>{e.preventDefault();const i=document.querySelector('#taskInput');if(addTask(i.value,document.querySelector('#priorityInput').value)){i.value='';i.focus()}};
+document.querySelector('#saveNote').onclick=()=>{persist();alert('Memory Core sauvegardé 🧠')};
+document.querySelector('#chatForm').onsubmit=e=>{e.preventDefault();const v=input.value.trim();if(!v)return;input.value='';addMessage('user',v);askAI(v)};
 document.querySelector('#newConversation').onclick=createConversation;document.querySelector('#newConversationSide').onclick=createConversation;
-
-const SpeechRecognition=window.SpeechRecognition||window.webkitSpeechRecognition;
-if(SpeechRecognition){const recognition=new SpeechRecognition();recognition.lang='fr-FR';recognition.interimResults=false;recognition.continuous=false;document.querySelector('#voiceButton').onclick=()=>{voiceStatus.textContent='🎙️ Je t’écoute…';recognition.start()};recognition.onresult=e=>{chatInput.value=e.results[0][0].transcript;voiceStatus.textContent='Voix reconnue. Envoie la commande.'};recognition.onerror=()=>{voiceStatus.textContent='Impossible de reconnaître la voix dans ce navigateur.'}}
-else{document.querySelector('#voiceButton').disabled=true;voiceStatus.textContent='La commande vocale n’est pas prise en charge par ce navigateur.'}
-
-if(!conversations.length)createConversation();else{if(!activeId||!getActive())activeId=conversations[0].id;loadConversation()} render();
+document.querySelector('#focusBtn').onclick=()=>{document.body.classList.toggle('focus-mode');document.querySelector('#focusBtn').textContent=document.body.classList.contains('focus-mode')?'✕ Quitter Focus':'⚡ Mode Focus'};
+document.querySelectorAll('[data-prompt]').forEach(b=>b.onclick=()=>{input.value=b.dataset.prompt;input.focus()});document.querySelectorAll('[data-skill]').forEach(b=>b.onclick=()=>{const s=b.dataset.skill;input.value=`Active le skill ${s} et aide-moi à avancer.`;input.focus()});
+const SR=window.SpeechRecognition||window.webkitSpeechRecognition;if(SR){const rec=new SR();rec.lang='fr-FR';rec.interimResults=false;rec.onresult=e=>{input.value=e.results[0][0].transcript;input.focus()};document.querySelector('#voiceButton').onclick=()=>rec.start()}else document.querySelector('#voiceButton').disabled=true;
+if(!conversations.length)createConversation();else{if(!activeId||!getActive())activeId=conversations[0].id;loadConversation()}renderTasks();drawChart();
