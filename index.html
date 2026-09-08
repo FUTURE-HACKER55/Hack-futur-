@@ -27,7 +27,6 @@
     <div class="quick"><button data-prompt="Analyse mes priorités et propose un plan pour aujourd’hui.">🎯 Planifier</button><button data-prompt="Crée un exemple JavaScript moderne et explique-le.">⚡ JavaScript</button><button data-prompt="Crée un mini projet Python propre et explique chaque partie.">🐍 Python</button><button data-prompt="Crée une page HTML/CSS moderne et responsive.">🌐 HTML/CSS</button><button data-prompt="Fais un audit de mon projet et donne-moi les améliorations prioritaires.">🧠 Audit</button></div>
   </section>
 </section>
-
 <section class="card devlab-card" id="devLab">
   <div class="section-title"><div><span class="badge">DEV MODE</span><h2>🧪 X-Carl Dev Lab</h2></div><span class="counter">12 OUTILS</span></div>
   <p class="muted lab-intro">Un atelier intégré pour écrire, tester visuellement, copier et exporter tes prototypes. Le navigateur exécute le JavaScript/HTML de prévisualisation dans un bac à sable.</p>
@@ -39,7 +38,6 @@
   <div class="lab-grid"><div class="editor-wrap"><div class="editor-head"><span>CODE EDITOR</span><span id="codeMeta">HTML</span></div><textarea id="codeEditor" spellcheck="false" aria-label="Éditeur de code"></textarea></div><div class="preview-wrap"><div class="editor-head"><span>LIVE PREVIEW</span><span id="previewStatus">READY</span></div><iframe id="previewFrame" sandbox="allow-scripts" title="Prévisualisation du code"></iframe></div></div>
   <div class="lab-bottom"><div><b>Assistant développeur</b><span class="muted"> Demande à X-Carl de corriger, refactoriser, commenter ou améliorer ton code.</span></div><button class="small" data-prompt="Agis comme un ingénieur logiciel senior. Aide-moi à concevoir une architecture propre, sécurisée et maintenable pour mon projet.">🛠️ Architecture</button></div>
 </section>
-
 <section class="dashboard-grid">
   <article class="card skills-card"><div class="section-title"><h2>⚡ Skills</h2><span class="counter">12 ACTIVE</span></div><div id="skillsGrid" class="skills-grid"></div></article>
   <article class="card analytics-card"><div class="section-title"><h2>📈 Analytics</h2><span class="counter">LIVE</span></div><div class="chart"><div id="chartBars" class="bars"></div></div><div class="chart-labels"><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span></div></article>
@@ -54,5 +52,5 @@
 </section>
 <section class="card conversations-card"><div class="section-title"><h2>💬 Conversations</h2><button id="newConversationSide" class="small">＋ Nouvelle</button></div><div id="conversationList" class="conversation-list"></div></section>
 <footer>X-Carl • Données locales dans ce navigateur • La clé API reste côté serveur • Dev Lab en mode sandbox</footer>
-</main><script src="app.js"></script>
+</main><script src="app.js"></script><script src="ide.js"></script>
 </body></html>
