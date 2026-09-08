@@ -1,75 +1,40 @@
 <!doctype html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#0b1020">
-  <title>Future Assistant — V2</title>
-  <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><meta name="theme-color" content="#080b18">
+<title>X-Carl — AI Command Center</title><link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <main class="app">
-    <header class="topbar">
-      <div>
-        <p class="eyebrow">FUTURE ASSISTANT · V2</p>
-        <h1>Ton espace pour avancer.</h1>
-        <p class="muted">Conversations, mémoire structurée, tâches et commandes vocales.</p>
-      </div>
-      <div class="top-actions">
-        <button id="newConversation" class="ghost">＋ Nouvelle conversation</button>
-        <button id="clearDone" class="ghost">Effacer les terminées</button>
-      </div>
-    </header>
-
-    <section class="workspace">
-      <aside class="card sidebar">
-        <div class="section-title"><h2>Conversations</h2><span id="conversationCount" class="counter">0</span></div>
-        <button id="newConversationSide" class="primary full">＋ Nouvelle conversation</button>
-        <div id="conversationList" class="conversation-list"></div>
-        <div class="memory-mini">
-          <div class="section-title"><h3>🧠 Mémoire</h3><button id="saveNote" class="small">Sauver</button></div>
-          <textarea id="notes" maxlength="3000" placeholder="Objectifs, idées, préférences à retenir…"></textarea>
-        </div>
-      </aside>
-
-      <section class="card chat-card">
-        <div class="chat-header">
-          <div><span class="badge">Assistant</span><h2 id="conversationTitle">Nouvelle conversation</h2></div>
-          <span id="aiStatus" class="counter">Local</span>
-        </div>
-        <div id="chatMessages" class="chat-messages" aria-live="polite"></div>
-        <form id="chatForm" class="chat-form">
-          <input id="chatInput" maxlength="1000" placeholder="Écris à ton assistante…" autocomplete="off">
-          <button id="voiceButton" class="small" type="button" title="Commande vocale">🎙️</button>
-          <button class="primary" type="submit">Envoyer</button>
-        </form>
-        <p id="voiceStatus" class="muted hint">Essaie : « ajoute une tâche », « montre mes tâches », « note… »</p>
-      </section>
-    </section>
-
-    <section class="grid secondary-grid">
-      <article class="card hero">
-        <span class="badge">Aujourd'hui</span>
-        <h2 id="progressTitle">Prêt à commencer</h2>
-        <div class="progress"><span id="progressBar"></span></div>
-        <p id="progressText" class="muted">Ajoute ta première tâche.</p>
-      </article>
-      <article class="card">
-        <h2>Nouvelle tâche</h2>
-        <form id="taskForm" class="stack">
-          <input id="taskInput" required maxlength="120" placeholder="Ex. Terminer mon prototype" autocomplete="off">
-          <select id="priorityInput"><option value="normal">Priorité normale</option><option value="high">Priorité haute</option><option value="low">Priorité basse</option></select>
-          <button class="primary" type="submit">Ajouter</button>
-        </form>
-      </article>
-      <article class="card tasks-card">
-        <div class="section-title"><h2>Mes tâches</h2><span id="taskCount" class="counter">0</span></div>
-        <ul id="taskList" class="tasks"></ul>
-      </article>
-    </section>
-
-    <footer>Données locales dans ce navigateur • la clé API reste uniquement côté serveur.</footer>
-  </main>
-  <script src="app.js"></script>
-</body>
-</html>
+<div class="scanlines"></div>
+<main class="app">
+<header class="topbar">
+  <div class="brand"><div class="orb"><span>XC</span></div><div><p class="eyebrow">X-CARL // AI COMMAND CENTER</p><h1>Ton assistant. <em>Ton système.</em></h1><p class="muted">Skills, objectifs, mémoire, analytics et conversation IA.</p></div></div>
+  <div class="top-actions"><span id="systemStatus" class="status"><i></i> ONLINE</span><button id="newConversation" class="ghost">＋ Nouveau chat</button></div>
+</header>
+<section class="hero-grid">
+  <aside class="card profile-card">
+    <div class="avatar-ring"><div class="avatar">XC</div></div><span class="rank">LEVEL <b id="level">1</b></span>
+    <h2>X-Carl</h2><p class="muted">Personal AI / Architect</p>
+    <div class="xp-row"><span>XP</span><b id="xpText">0 / 100</b></div><div class="xp"><span id="xpBar"></span></div>
+    <div class="stat-mini"><div><b id="skillCount">6</b><span>Skills</span></div><div><b id="taskCount">0</b><span>Tasks</span></div><div><b id="streak">0</b><span>Streak</span></div></div>
+    <button id="focusBtn" class="primary full">⚡ Mode Focus</button>
+  </aside>
+  <section class="card command-card">
+    <div class="section-title"><div><span class="badge">CORE ONLINE</span><h2>Command Center</h2></div><span id="aiStatus" class="counter">LOCAL</span></div>
+    <div id="chatMessages" class="chat-messages" aria-live="polite"></div>
+    <form id="chatForm" class="chat-form"><input id="chatInput" maxlength="2000" placeholder="Demande quelque chose à X-Carl…" autocomplete="off"><button id="voiceButton" class="small" type="button">🎙️</button><button class="primary" type="submit">Envoyer</button></form>
+    <div class="quick"><button data-prompt="Analyse mes priorités et propose un plan pour aujourd’hui.">🎯 Planifier</button><button data-prompt="Aide-moi à apprendre JavaScript avec un mini plan.">💻 Apprendre</button><button data-prompt="Donne-moi une idée créative pour mon projet.">✨ Créer</button><button data-prompt="Fais un résumé de mes tâches actuelles.">📊 Analyser</button></div>
+  </section>
+</section>
+<section class="dashboard-grid">
+  <article class="card skills-card"><div class="section-title"><h2>⚡ Skills</h2><span class="counter">6 ACTIVE</span></div><div id="skillsGrid" class="skills-grid"></div></article>
+  <article class="card analytics-card"><div class="section-title"><h2>📈 Analytics</h2><span class="counter">LIVE</span></div><div class="chart"><div id="chartBars" class="bars"></div></div><div class="chart-labels"><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span></div></article>
+</section>
+<section class="dashboard-grid lower">
+  <article class="card"><div class="section-title"><h2>🎯 Mission Board</h2><span id="progressText" class="muted">0%</span></div><form id="taskForm" class="task-form"><input id="taskInput" required maxlength="160" placeholder="Nouvelle mission…"><select id="priorityInput"><option value="normal">Normal</option><option value="high">Urgent</option><option value="low">Faible</option></select><button class="primary">Ajouter</button></form><div class="progress"><span id="progressBar"></span></div><ul id="taskList" class="tasks"></ul></article>
+  <article class="card memory-card"><div class="section-title"><h2>🧠 Memory Core</h2><button id="saveNote" class="small">Sauver</button></div><textarea id="notes" maxlength="5000" placeholder="Objectifs, idées, préférences et informations utiles…"></textarea><div class="memory-tags"><span>LOCAL</span><span>PRIVATE</span><span>STRUCTURED</span></div></article>
+</section>
+<section class="card conversations-card"><div class="section-title"><h2>💬 Conversations</h2><button id="newConversationSide" class="small">＋ Nouvelle</button></div><div id="conversationList" class="conversation-list"></div></section>
+<footer>X-Carl • Données locales dans ce navigateur • La clé API reste côté serveur</footer>
+</main><script src="app.js"></script>
+</body></html>
